@@ -156,7 +156,7 @@ app.post("/insert", (req, res) => {
       });
     db.query(
       "INSERT INTO question (name, email, tel, policy, question, upload,others,date) VALUES (?,?,?,?,?,?,?,?)",
-      [name, email, tel, policy, question, filename, txtother, date],
+      [name, email, tel, policy, question, imgsrc, txtother, date],
       (err, result) => {
         if (err) throw err;
       }
