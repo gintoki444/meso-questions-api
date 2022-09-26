@@ -7,6 +7,8 @@ const multer = require("multer");
 const bodyParser = require("body-parser");
 const upload = multer({ dest: "uploads/" });
 
+let PORT = process.env.PORT || 3001
+
 const cors = require("cors");
 
 // app.use(cors());
@@ -188,6 +190,6 @@ app.post("/insert", (req, res) => {
   });
 });
 
-app.listen("3001", () => {
+app.listen(PORT, () => {
   console.log("Server is running on port 3001");
 });
