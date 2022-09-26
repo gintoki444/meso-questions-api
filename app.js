@@ -120,7 +120,7 @@ app.post("/insert", (req, res) => {
   // console.log("================= others", others);
   // console.log("================= txtother", txtother);
   // console.log("================= imgsrc", imgsrc);
-  file.mv(`${newpath}${filename}`, (err) => {
+  // file.mv(`${newpath}${filename}`, (err) => {
     if (err) {
       res.send({ code: 500, msg: "errrrrrr" });
     }
@@ -154,13 +154,13 @@ app.post("/insert", (req, res) => {
       .then(() => {
         console.log("send completed!");
       });
-    db.query(
-      "INSERT INTO question (name, email, tel, policy, question, upload,others,date) VALUES (?,?,?,?,?,?,?,?)",
-      [name, email, tel, policy, question, imgsrc, txtother, date],
-      (err, result) => {
-        if (err) throw err;
-      }
-    );
+    // db.query(
+    //   "INSERT INTO question (name, email, tel, policy, question, upload,others,date) VALUES (?,?,?,?,?,?,?,?)",
+    //   [name, email, tel, policy, question, imgsrc, txtother, date],
+    //   (err, result) => {
+    //     if (err) throw err;
+    //   }
+    // );
     res.send({ code: 200, msg: "Upload success" });
-  });
+  // });
 });
