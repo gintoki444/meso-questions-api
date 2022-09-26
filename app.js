@@ -121,9 +121,9 @@ app.post("/insert", (req, res) => {
   // console.log("================= txtother", txtother);
   // console.log("================= imgsrc", imgsrc);
   // file.mv(`${newpath}${filename}`, (err) => {
-    if (err) {
-      res.send({ code: 500, msg: "errrrrrr" });
-    }
+    // if (err) {
+    //   res.send({ code: 500, msg: "errrrrrr" });
+    // }
     //   // //================= Line notifile =================
     const lineNotify = require("line-notify-nodejs")(
       "VP66e2N9FxbS1g7cxJPXpcmbp52pipEAZGWCv87b4tf"
