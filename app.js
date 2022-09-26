@@ -55,7 +55,7 @@ app.get("/userid", (req, res) => {
 app.get("/profiles/:id", (req, res) => {
   profileid = req.params.id;
   console.log(" profileid ", profileid);
-  if (profileid)
+  if (profileid !== undefined)
     db.query("SELECT * FROM question where id =?", profileid, (err, result) => {
       if (err) {
         console.log(err);
@@ -154,13 +154,13 @@ app.post("/insert", (req, res) => {
       .then(() => {
         console.log("send completed!");
       });
-    // db.query(
-    //   "INSERT INTO question (name, email, tel, policy, question, upload,others,date) VALUES (?,?,?,?,?,?,?,?)",
-    //   [name, email, tel, policy, question, imgsrc, txtother, date],
-    //   (err, result) => {
-    //     if (err) throw err;
-    //   }
-    // );
+    db.query(
+      "INSERT INTO question (name, email, tel, policy, question, upload,others,date) VALUES (?,?,?,?,?,?,?,?)",
+      [name, email, tel, policy, question, imgsrc, txtother, date],
+      (err, result) => {
+        if (err) throw err;
+      }
+    );
     res.send({ code: 200, msg: "Upload success" });
   // });
 });
