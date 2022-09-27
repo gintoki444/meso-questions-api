@@ -3,6 +3,7 @@ const fileupload = require("express-fileupload");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const mysql = require("mysql");
+const multer = require('multer')
 
 let port = process.env.PORT || 3001;
 const app = express();
@@ -12,6 +13,23 @@ app.use(fileupload());
 app.use(express.static("files"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+
+
+// const storage = multer.diskStorage({
+//   destination: function (req, file, callback) {
+//     console.log("file ****",file);
+//     callback(null, __dirname + "/uploads/")
+//   },
+//    limits: { fileSize: 1024 * 1024 },
+//   filename: function (req, file, callback) {
+//     callback(null, file.originalname)
+//   },
+// })
+
+// const upload = multer({ storage })
+// console.log ("upload ",upload)
+const upload = multer({ dest: __dirname + "/uploads/" })
 
 const db = mysql.createConnection({
   // user: "root",
@@ -25,6 +43,7 @@ const db = mysql.createConnection({
   password: "Der@1214!",
   database: "cp722089_meso-question",
 });
+
 app.get("/question", (req, res) => {
   db.query("SELECT * FROM question", (err, result) => {
     if (err) {
@@ -81,7 +100,6 @@ app.post("/insert", (req, res) => {
   const question = req.body.question;
   const others = JSON.parse(req.body.others);
   const txtother = others.map((item) => item.value);
-  const urlProfile = urls + "/meso-questions/profiles/" + userid;
   var imgsrc = newpath + filename;
 
   let txtquestion = "";
@@ -106,25 +124,14 @@ app.post("/insert", (req, res) => {
     }
   }
 
-  console.log("======== newpath ======== ", newpath);
-  // console.log("======== filename ======== ", filename);
-  // console.log("======= url ======", urls);
-  // console.log("================= userid : ", userid);
-  // console.log("================= name : ", name);
-  // console.log("================= email : ", email);
-  // console.log("================= tel : ", tel);
-  // console.log("================= policy : ", policy);
-  // console.log("================= question : ", question);
-  // console.log("================= date : ", date);
-  // console.log("================= txtquestion", txtquestion);
-  // console.log("================= others", others);
-  // console.log("================= txtother", txtother);
-  // console.log("================= imgsrc", imgsrc);
-  // file.mv(`${newpath}${filename}`, (err) => {
-    // if (err) {
-    //   res.send({ code: 500, msg: "errrrrrr" });
-    // }
-    //   // //================= Line notifile =================
+  let query = "SELECT id FROM question ORDER BY id DESC LIMIT 0, 1";
+  db.query(query, (err, rows) => {
+    if (err) throw err;
+    const getid = rows.map((item) => item.id + 1);
+    const urlProfile = urls + "/meso-questions/profiles/" + getid;
+
+    console.log("urlProfile ", urlProfile);
+    // ================= Line notifile =================
     const lineNotify = require("line-notify-nodejs")(
       "VP66e2N9FxbS1g7cxJPXpcmbp52pipEAZGWCv87b4tf"
     );
@@ -154,13 +161,35 @@ app.post("/insert", (req, res) => {
       .then(() => {
         console.log("send completed!");
       });
-    db.query(
-      "INSERT INTO question (name, email, tel, policy, question, upload,others,date) VALUES (?,?,?,?,?,?,?,?)",
-      [name, email, tel, policy, question, imgsrc, txtother, date],
-      (err, result) => {
-        if (err) throw err;
-      }
-    );
-    res.send({ code: 200, msg: "Upload success" });
+  });
+
+  // console.log("======== newpath ======== ", newpath);
+  // console.log("======== filename ======== ", filename);
+  // console.log("======= url ======", urls);
+  // console.log("================= userid : ", userid);
+  // console.log("================= name : ", name);
+  // console.log("================= email : ", email);
+  // console.log("================= tel : ", tel);
+  // console.log("================= policy : ", policy);
+  // console.log("================= question : ", question);
+  // console.log("================= date : ", date);
+  // console.log("================= txtquestion", txtquestion);
+  // console.log("================= others", others);
+  // console.log("================= txtother", txtother);
+  // console.log("================= imgsrc", imgsrc);
+  // file.mv(`${newpath}${filename}`, (err) => {
+  // if (err) {
+  //   res.send({ code: 500, msg: "errrrrrr" });
+  // }
+
+  db.query(
+    "INSERT INTO question (name, email, tel, policy, question, upload,others,date) VALUES (?,?,?,?,?,?,?,?)",
+    [name, email, tel, policy, question, imgsrc, txtother, date],
+    (err, result) => {
+      if (err) throw err;
+    }
+  );
+  res.send(req.files)
+  res.send({ code: 200, msg: "Upload success" });
   // });
 });
