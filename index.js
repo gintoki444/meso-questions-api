@@ -37,6 +37,10 @@ const db = mysql.createConnection({
   password: "Der@1214!",
   database: "cp722089_meso-question",
 });
+
+
+
+
 app.get("/question", (req, res) => {
   db.query("SELECT * FROM question", (err, result) => {
     if (err) {
