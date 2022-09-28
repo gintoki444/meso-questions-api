@@ -3,7 +3,6 @@ const fileupload = require("express-fileupload");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const mysql = require("mysql");
-const multer = require('multer')
 
 let port = process.env.PORT || 3001;
 const app = express();
@@ -29,19 +28,19 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // const upload = multer({ storage })
 // console.log ("upload ",upload)
-const upload = multer({ dest: __dirname + "/uploads/" })
 
 const db = mysql.createConnection({
   // user: "root",
   // host: "localhost",
   // password: "",
   // database: "meso-question",
+
   // server Ecom
   connectionLimit: 50,
-  user: "cp722089_chanu",
-  host: "ftp.19163198-78-20200514162858.webstarterz.com",
-  password: "Der@1214!",
-  database: "cp722089_meso-question",
+  user: "question",
+  host: "203.170.129.195",
+  password: "Black26114!",
+  database: "meso_question",
 });
 
 app.get("/question", (req, res) => {
@@ -85,14 +84,13 @@ app.get("/profiles/:id", (req, res) => {
   else res.send({ code: 500, msg: "Please add id" });
 });
 
-// Upload File and mysq Line notify
+// // Upload File and mysq Line notify
 app.post("/insert", (req, res) => {
   const newpath = __dirname + "/uploads/";
   const file = req.files.upload;
   const filename = file.name;
 
   const urls = req.body.urls;
-  const userid = req.body.userid;
   const name = req.body.name;
   const email = req.body.email;
   const tel = req.body.tel;
@@ -100,7 +98,7 @@ app.post("/insert", (req, res) => {
   const question = req.body.question;
   const others = JSON.parse(req.body.others);
   const txtother = others.map((item) => item.value);
-  var imgsrc = newpath + filename;
+  var imgsrc = "/uploads/" + filename;
 
   let txtquestion = "";
   const questionTitle = [
@@ -177,10 +175,11 @@ app.post("/insert", (req, res) => {
   // console.log("================= others", others);
   // console.log("================= txtother", txtother);
   // console.log("================= imgsrc", imgsrc);
-  // file.mv(`${newpath}${filename}`, (err) => {
-  // if (err) {
-  //   res.send({ code: 500, msg: "errrrrrr" });
-  // }
+
+  file.mv(`${newpath}${filename}`, (err) => {
+  if (err) {
+    res.send({ code: 500, msg: "errrrrrr" });
+  }
 
   db.query(
     "INSERT INTO question (name, email, tel, policy, question, upload,others,date) VALUES (?,?,?,?,?,?,?,?)",
@@ -189,7 +188,6 @@ app.post("/insert", (req, res) => {
       if (err) throw err;
     }
   );
-  res.send(req.files)
   res.send({ code: 200, msg: "Upload success" });
-  // });
+  });
 });
