@@ -70,6 +70,20 @@ app.get("/userid", (req, res) => {
   );
 });
 
+
+app.get("/questionall", (req, res) => {
+  db.query(
+    "SELECT * FROM question ORDER BY id DESC",
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
 app.get("/profiles/:id", (req, res) => {
   profileid = req.params.id;
   console.log(" profileid ", profileid);
